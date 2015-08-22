@@ -39,12 +39,11 @@ char boot[] =
 " : terminate   >r 0 0 0 0 0 r> SYS_exit syscall ; "
 " : emit   >r 0 0 0 1 rp@ 1 SYS_write syscall rdrop drop ; "
 " 2 2* 2* 2+ constant 10 "
-" 10 10 + 10 + 10 + 2+ constant 42 "
 " 10 10 + 10 + 10 + 10 + 10 + 2+ 2+ 1+ constant 65 "
-" : star   42 base @ + 1 base +! emit ; "
+" : letter   65 base @ + 1 base +! emit ; "
 " : nl   10 emit ; "
 " : bye   0 terminate ; "
-" : test   10 10 + begin star 1- dup 0< until drop nl bye ; "
+" : test   10 10 + begin letter 1- dup 0< until drop nl bye ; "
 " test "
 ;
 

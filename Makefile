@@ -42,7 +42,7 @@ LIBS=
 all: tests
 
 tests: $(BINARIES)
-	for x in $(RUNNABLE); do echo $$x; $$x; done
+	for x in $(RUNNABLE); do bash test.sh $$x; done
 
 out:
 	mkdir -p out
