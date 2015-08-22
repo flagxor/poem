@@ -1,7 +1,19 @@
 #ifndef _forth_h_
 #define _forth_h_
 
-#include <sys/syscall.h>
+#if defined(__APPLE__)
+# include <unistd.h>
+#else
+#if defined(__i386__) || defined(__arm__)
+# define SYS_write 4
+# define SYS_exit 1
+#elif defined(__x86_64__)
+# define SYS_write 1
+# define SYS_exit 60
+#else
+# error "unsupported arch"
+#endif
+#endif
 
 typedef unsigned char byte;
 #if defined(__i386__)
