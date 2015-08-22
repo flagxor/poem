@@ -3,7 +3,11 @@
 set -e
 
 if [[ "$1" = *arm* ]]; then
-  CMD="/usr/bin/qemu-arm $1"
+  if [[ "${TRAVIS}" = true ]]; then
+    CMD="echo skipping $1"
+  else
+    CMD="qemu-arm $1"
+  fi
 else
   CMD="$1"
 fi
