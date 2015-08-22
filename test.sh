@@ -3,7 +3,7 @@
 set -e
 
 if [[ "$1" = *arm* ]]; then
-  CMD="qemu-arm $1"
+  CMD="/usr/bin/qemu-arm $1"
 else
   CMD="$1"
 fi
