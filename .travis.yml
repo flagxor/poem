@@ -1,5 +1,8 @@
 language: c
 
+before_install:
+  - sudo apt-get install libc6-dev
+
 script:
   - make clean
   - make
