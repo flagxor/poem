@@ -1,0 +1,15 @@
+language: c
+
+script:
+  - make clean
+  - make
+
+compiler:
+  - clang
+  - gcc
+
+os:
+  - linux
+  - osx
+
+
