@@ -4,7 +4,8 @@ set -e
 
 if [[ "$1" = *arm* ]]; then
   if [[ "${TRAVIS}" = true ]]; then
-    CMD="echo skipping $1"
+    echo "skipping $1"
+    exit 0
   else
     CMD="qemu-arm $1"
   fi
