@@ -1,5 +1,8 @@
 language: c
 
+before_install:
+  - sudo apt-get install gcc-arm-linux-gnueabihf
+
 script:
   - make clean
   - make
