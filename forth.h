@@ -2,7 +2,7 @@
 #define _forth_h_
 
 #if defined(__APPLE__)
-# include <unistd.h>
+# include <sys/syscall.h>
 #else
 #if defined(__i386__) || defined(__arm__)
 # define SYS_write 4
