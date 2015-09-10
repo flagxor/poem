@@ -52,19 +52,7 @@ static void interp(cell *ip, cell *dsp, cell *rsp, cell *user, cell *heap) {
   DEFS("*", mul, sub) { tos *= *dsp--; NEXT; }
   DEF(negate, mul) { tos = -tos; NEXT; }
 
-#if defined(__arm__)
-# define BEFORE_AND negate
-#else
-  DEFS("/", div, negate) { tos = (*dsp--) / tos; NEXT; }
-  DEF(mod, div) { tos = (*dsp--) % tos; NEXT; }
-  DEFS("/mod", divmod, mod) {
-    x = (cell *) (*dsp % tos); tos = *dsp / tos; *dsp = (cell) x; NEXT; }
-  DEFS("*/mod", muldivmod, divmod) { tos = muldivmod(tos, dsp); --dsp; NEXT; }
-  DEFS("*/", muldiv, muldivmod) { tos = muldiv(tos, dsp); dsp -= 2; NEXT; }
-# define BEFORE_AND muldiv
-#endif
-
-  DEF(and, BEFORE_AND) { tos &= *dsp--; NEXT; }
+  DEF(and, negate) { tos &= *dsp--; NEXT; }
   DEF(or, and) { tos |= *dsp--; NEXT; }
   DEF(xor, or) { tos ^= *dsp--; NEXT }
   DEF(invert, xor) { tos = ~tos; NEXT; }

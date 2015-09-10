@@ -59,34 +59,4 @@ static cell system_call(cell tos, cell *dsp) {
   return tos;
 }
 
-#if !defined(__arm__)
-
-static cell muldiv(cell tos, cell *dsp) {
-#ifdef __i386__
-  asm("imull %1, %%eax; idivl %3, %%eax;"
-      : "=a"(tos) : "g"(tos), "a"(dsp[0]), "g"(dsp[-1]) : "edx");
-#elif __x86_64__
-  asm("imulq %1, %%rax; idivq %3, %%rax;"
-      : "=a"(tos) : "g"(tos), "a"(dsp[0]), "g"(dsp[-1]) : "edx");
-#else
-# error "unsupported arch"
-#endif
-  return tos;
-}
-
-static cell muldivmod(cell tos, cell *dsp) {
-#ifdef __i386__
-  asm("imull %2, %%eax; idivl %4, %%eax;"
-      : "=a"(tos), "=d"(dsp[-1]) : "g"(tos), "a"(dsp[0]), "d"(dsp[-1]));
-#elif __x86_64__
-  asm("imulq %2, %%rax; idivq %4, %%rax;"
-      : "=a"(tos), "=d"(dsp[-1]) : "g"(tos), "a"(dsp[0]), "d"(dsp[-1]));
-#else
-# error "unsupported arch"
-#endif
-  return tos;
-}
-
-#endif
-
 #endif
