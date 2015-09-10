@@ -26,6 +26,12 @@ typedef long cell;
 # error "unsupported arch"
 #endif
 
+#if defined(__i386__)
+typedef cell *(*code_word_t)(cell *) __attribute__((fastcall));
+#else
+typedef cell *(*code_word_t)(cell *);
+#endif
+
 // DICTIONARY LAYOUT
 #define D_NEXT 0
 #define D_NAME 1

@@ -28,6 +28,9 @@ char boot[] =
 " : _user_slot    _user_var_count @ 1 _user_var_count +! ; "
 " : user   _douvar 0 _new_word _user_slot , ; "
 
+" : code   _docode ; "
+" : end-code   ; "
+
 " user _catcher "
 " : catch   sp@ >r _catcher @ >r rp@ _catcher ! execute "
 "           r> _catcher ! r> drop 0 ; "

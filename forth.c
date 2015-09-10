@@ -13,6 +13,7 @@ static void interp(cell *ip, cell *dsp, cell *rsp, cell *user, cell *heap) {
   docon: DUP; tos = w[D_CODE_TO_REST]; NEXT;
   douvar: DUP; tos = (cell) &user[w[D_CODE_TO_REST]]; NEXT;
   dovar: DUP; tos = (cell) (w + D_CODE_TO_REST); NEXT;
+  docode: DUP; dsp = ((code_word_t) (w + D_CODE_TO_REST))(dsp); DROP; NEXT;
 
   DEFE("", tail, F_TAIL, tail) };
 
@@ -108,8 +109,9 @@ static void interp(cell *ip, cell *dsp, cell *rsp, cell *user, cell *heap) {
   DEFC("_dovar", _dovar, _dict_head, && dovar);
   DEFC("_douvar", _douvar, _dovar, && douvar);
   DEFC("_docon", _docon, _douvar, && docon);
+  DEFC("_docode", _docode, _docon, && docode);
 
-  DEF(cmove, _docon) {
+  DEF(cmove, _docode) {
     cmove((const char *) dsp[-1], (char *) dsp[0], tos); DROP; DROP; NEXT };
   DEFS("cmove>", cmoved, cmove) {
     cmoved((const char *) dsp[-1], (char *) dsp[0], tos); DROP; DROP; NEXT };
