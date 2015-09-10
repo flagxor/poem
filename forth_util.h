@@ -43,7 +43,7 @@ static cell find(cell *vocab, const char *s, cell n, cell *xt) {
 }
 
 static int is_space(char ch) {
-  return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\r';
+  return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n';
 }
 
 static cell parse_word(char *buffer, cell n, cell *at, cell *ret) {
