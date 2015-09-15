@@ -1,6 +1,6 @@
 UNAME_S := $(shell uname -s)
 
-CFLAGS=-Wall -Werror -g
+CFLAGS=-Wall -Werror -I out/gen -g
 
 X86_BINARIES= \
 	  out/forth_i686 \
@@ -47,7 +47,13 @@ tests: $(BINARIES)
 out:
 	mkdir -p out
 
-HEADERS=forth.h forth_asm.h forth_boot.h forth_util.h
+out/gen:
+	mkdir -p out/gen
+
+HEADERS=forth.h forth_asm.h out/gen/forth_boot.h forth_util.h
+
+out/gen/forth_boot.h: boot.fs | out/gen
+	xxd -i $< > $@
 
 out/forth_arm: out/forth_arm_opt
 	$(STRIP_arm) $< -o $@

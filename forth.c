@@ -167,8 +167,8 @@ static void interp(cell *ip, cell *dsp, cell *rsp, cell *user, cell *heap) {
   static cell *code[] = { W(quit) };
 start:
   if (!ip) {
-    user[U_TIB] = (cell) boot;
-    user[U_NTIB] = sizeof(boot) - 1;
+    user[U_TIB] = (cell) boot_fs;
+    user[U_NTIB] = (cell) boot_fs_len;
     user[U_TIN] = 0;
     user[U_HEAP] = (cell) heap;
     user[U_DICT_HEAD] = (cell) quit_entry;
