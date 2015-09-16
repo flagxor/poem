@@ -14,7 +14,7 @@ else
 fi
 
 echo ${CMD}
-if [[ "$(${CMD})" == "ABCDEFGHIJKLMNOPQRSTU" ]]; then
+if [[ "$(${CMD})" == "ABCDEFGHIJKLMNOPQRST" ]]; then
   echo PASS
   exit 0
 else

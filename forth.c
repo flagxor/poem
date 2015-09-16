@@ -59,7 +59,8 @@ static void interp(cell *ip, cell *dsp, cell *rsp, cell *user, cell *heap) {
 
   DEFS("<", less, invert) { tos = (*dsp--) < tos ? -1 : 0; NEXT; }
   DEFS("=", equal, less) { tos = (*dsp--) == tos ? -1 : 0; NEXT; }
-  DEFS(">", greater, equal) { tos = (*dsp--) > tos ? -1 : 0; NEXT; }
+  DEFS("<>", nequal, equal) { tos = (*dsp--) != tos ? -1 : 0; NEXT; }
+  DEFS(">", greater, nequal) { tos = (*dsp--) > tos ? -1 : 0; NEXT; }
 
   DEFS("0<", zless, greater) { tos = tos < 0 ? -1 : 0; NEXT; }
   DEFS("0=", zequal, zless) { tos = tos == 0 ? -1 : 0; NEXT; }
@@ -119,7 +120,8 @@ static void interp(cell *ip, cell *dsp, cell *rsp, cell *user, cell *heap) {
   DEF(_lit, align) { DUP; tos = *ip++; NEXT; }
   DEF(__lit, _lit) { DUP; tos = (cell) W(_lit); NEXT; }
   DEF(exit, __lit) { ip = (cell *) *rsp--; NEXT; }
-  DEF(execute, exit) { *++rsp = (cell) ip; w = CP(tos); DROP; goto *CP(*w); }
+  DEF(_semiexit, exit) { ip = (cell *) *rsp--; NEXT; }
+  DEF(execute, _semiexit) { *++rsp = (cell) ip; w = CP(tos); DROP; goto *CP(*w); }
 
   DEF(branch, execute) { ip = CP(*ip + (cell) ip); NEXT; }
   DEFS("0branch", zbranch, branch) {
@@ -153,7 +155,7 @@ static void interp(cell *ip, cell *dsp, cell *rsp, cell *user, cell *heap) {
   DEFWX(";", semicolon, F_IMMEDIATE, colon)
     W(_dict_head), W(load), L(D_FLAGS - D_NEXT), W(cells), W(add), W(dup),
     W(load), L(F_SMUDGE), W(xor), W(swap), W(store),
-    W(lbracket), L(W(exit)), W(comma), ENDW
+    W(lbracket), L(W(_semiexit)), W(comma), ENDW
 
   DEF(_find_raw, semicolon) {
     --dsp; tos = find(CP(tos), (const char *) dsp[0], dsp[1], &dsp[0]); NEXT; }
@@ -183,6 +185,6 @@ int main(void) {
 #else
 void _start(void) {
 #endif
-  cell dstack[16], rstack[16], user[16], heap[4096];
+  cell dstack[16], rstack[16], user[16], heap[1024 * 100];
   interp(0, &dstack[1], rstack, user, heap);
 }
