@@ -55,14 +55,24 @@ user _catcher
 : -rot   swap >r swap r> ;
 
 2 2* 2* 2+ constant 10
-10 10 + 10 + 10 + 2 2* 2* + constant 48
-: +digit   48 - swap 10 * + ;
+10 10 + 10 + 10 + 2 2* 2* + constant '0'
+: +digit   '0' - swap 10 * + ;
 : range   over + swap ;
-: #   _parse_word 0 -rot range do i c@ +digit loop ;
+: _#   _parse_word 0 -rot range do i c@ +digit loop ;
+: #   _# state @ if literal then ; immediate
 
+# 97 constant 'a'
+# 122 constant 'z'
 # 65 constant 'A'
-# 3 constant 3
-: xt>name   3 cells - dup @ swap 1 cells + @ ;
+: upper   dup 'a' >= over 'z' <= and if 'a' - 'A' + then ;
+
+'0' # 9 + constant '9'
+: hex>d   upper dup '9' > if 'A' - 10 + else '0' - then ;
+: +hdigit   hex>d swap # 16 * + ;
+: _$   _parse_word 0 -rot range do i c@ +hdigit loop ;
+: $   _$ state @ if literal then ; immediate
+
+: xt>name   # 3 cells - dup @ swap 1 cells + @ ;
 : xt>rest   1 cells + ;
 : xt.   xt>name type ;
 : see   ' xt>rest begin dup @ ['] _semiexit <> while dup @ xt. cell+ repeat ;
@@ -70,7 +80,7 @@ user _catcher
 : nl   10 emit ;
 : bye   0 terminate ;
 
-: test1 10 10 + for i 'A' + emit loop nl ;
+: test1 $ 14 for i 'A' + emit loop nl ;
 test1
 
 bye

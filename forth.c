@@ -61,8 +61,10 @@ static void interp(cell *ip, cell *dsp, cell *rsp, cell *user, cell *heap) {
   DEFS("=", equal, less) { tos = (*dsp--) == tos ? -1 : 0; NEXT; }
   DEFS("<>", nequal, equal) { tos = (*dsp--) != tos ? -1 : 0; NEXT; }
   DEFS(">", greater, nequal) { tos = (*dsp--) > tos ? -1 : 0; NEXT; }
+  DEFS("<=", lequal, greater) { tos = (*dsp--) <= tos ? -1 : 0; NEXT; }
+  DEFS(">=", gequal, lequal) { tos = (*dsp--) >= tos ? -1 : 0; NEXT; }
 
-  DEFS("0<", zless, greater) { tos = tos < 0 ? -1 : 0; NEXT; }
+  DEFS("0<", zless, gequal) { tos = tos < 0 ? -1 : 0; NEXT; }
   DEFS("0=", zequal, zless) { tos = tos == 0 ? -1 : 0; NEXT; }
   DEFS("0>", zgreater, zequal) { tos = tos > 0 ? -1 : 0; NEXT; }
 
