@@ -51,11 +51,17 @@ user _catcher
 : throw   dup 0= if drop exit then
           _catcher @ rp! r> _catcher ! r> swap >r sp! drop r> ;
 
-2 1+ constant 3
-2 2* 2+ constant 5
+: rot   >r swap r> swap ;
+: -rot   swap >r swap r> ;
+
 2 2* 2* 2+ constant 10
-10 10 + 10 + 10 + 10 + 10 + 2+ 2+ 1+ constant 65
-10 10 + 10 + 10 + 2+ constant 42
+10 10 + 10 + 10 + 2 2* 2* + constant 48
+: +digit   48 - swap 10 * + ;
+: range   over + swap ;
+: #   _parse_word 0 -rot range do i c@ +digit loop ;
+
+# 65 constant 'A'
+# 3 constant 3
 : xt>name   3 cells - dup @ swap 1 cells + @ ;
 : xt>rest   1 cells + ;
 : xt.   xt>name type ;
@@ -64,9 +70,7 @@ user _catcher
 : nl   10 emit ;
 : bye   0 terminate ;
 
-: star 42 emit ;
-
-: test1 10 10 + for i 65 + emit loop nl ;
+: test1 10 10 + for i 'A' + emit loop nl ;
 test1
 
 bye
