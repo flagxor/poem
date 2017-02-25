@@ -78,8 +78,4 @@ user _catcher
 : cr   10 emit ;
 : bye   0 terminate ;
 
-: test1 $ 14 for i 'A' + emit loop cr ;
-test1
-
 yield
-
