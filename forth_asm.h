@@ -3,7 +3,7 @@
 
 #include "forth.h"
 
-static cell system_call(cell tos, cell *dsp) {
+static cell_t system_call(cell_t tos, cell_t *dsp) {
 #if __i386__
 # ifdef __APPLE__
   asm volatile(
@@ -38,13 +38,13 @@ static cell system_call(cell tos, cell *dsp) {
       "g"(dsp[-3]), "g"(dsp[-4]), "g"(dsp[-5])
       : "rcx", "r8", "r9", "r10", "r11", "memory");
 #elif __arm__
-  register cell r0 asm("r0") = dsp[0];
-  register cell r1 asm("r1") = dsp[-1];
-  register cell r2 asm("r2") = dsp[-2];
-  register cell r3 asm("r3") = dsp[-3];
-  register cell r4 asm("r4") = dsp[-4];
-  register cell r5 asm("r5") = dsp[-5];
-  register cell r11 asm("r11") = tos;
+  register cell_t r0 asm("r0") = dsp[0];
+  register cell_t r1 asm("r1") = dsp[-1];
+  register cell_t r2 asm("r2") = dsp[-2];
+  register cell_t r3 asm("r3") = dsp[-3];
+  register cell_t r4 asm("r4") = dsp[-4];
+  register cell_t r5 asm("r5") = dsp[-5];
+  register cell_t r11 asm("r11") = tos;
   asm volatile (
       "push {r7};"
       "mov r7, %7;"

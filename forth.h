@@ -17,19 +17,19 @@
 
 typedef unsigned char byte;
 #if defined(__i386__)
-typedef long cell;
+typedef long cell_t;
 #elif defined(__x86_64__)
-typedef long long cell;
+typedef long long cell_t;
 #elif defined(__arm__)
-typedef long cell;
+typedef long cell_t;
 #else
 # error "unsupported arch"
 #endif
 
 #if defined(__i386__)
-typedef cell *(*code_word_t)(cell *) __attribute__((fastcall));
+typedef cell_t *(*code_word_t)(cell_t *) __attribute__((fastcall));
 #else
-typedef cell *(*code_word_t)(cell *);
+typedef cell_t *(*code_word_t)(cell_t *);
 #endif
 
 // DICTIONARY LAYOUT
@@ -53,11 +53,11 @@ typedef cell *(*code_word_t)(cell *);
 #define DUP { *++dsp = tos; }
 #define DROP { tos = *dsp--; }
 
-// Force to (cell *).
-#define CP(value) ((cell *) (value))
+// Force to (cell_t *).
+#define CP(value) ((cell_t *) (value))
 // Generic dictionary definition start.
 #define DEFE(name, label, flags, last) \
-  static cell *label ## _entry[] = \
+  static cell_t *label ## _entry[] = \
   { CP(last ## _entry), CP(name), \
     CP(sizeof(name) - 1), CP(flags)
 // Define code word with string name.
