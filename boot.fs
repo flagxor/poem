@@ -1,3 +1,4 @@
+terminate
 : _last_flag   _dict_head @ cell+ cell+ cell+ ;
 : immediate   _last_flag @ 1 or _last_flag ! ;
 
@@ -11,10 +12,6 @@
 : begin   here ; immediate
 : until   ['] 0branch , here - , ; immediate
 : again   ['] branch , here - , ; immediate
-
-: terminate   >r 0 0 0 0 0 r> SYS_exit syscall ;
-: emit   >r 0 0 0 1 rp@ 1 SYS_write syscall rdrop drop ;
-: type   swap >r >r 0 0 0 r> r> 1 SYS_write syscall rdrop drop ;
 
 : postpone
     _parse_word find 1 =
@@ -72,13 +69,15 @@ user _catcher
 : _$   _parse_word 0 -rot range do i c@ +hdigit loop ;
 : $   _$ state @ if literal then ; immediate
 
+: type   for dup i + c@ emit loop drop ;
+
 : xt>name   # 3 cells - dup @ swap 1 cells + @ ;
 : xt>rest   1 cells + ;
 : xt.   xt>name type ;
 : see   ' xt>rest begin dup @ ['] _semiexit <> while dup @ xt. cell+ repeat ;
 
 : nl   10 emit ;
-: bye   0 terminate ;
+: bye   terminate ;
 
 : test1 $ 14 for i 'A' + emit loop nl ;
 test1

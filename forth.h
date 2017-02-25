@@ -1,35 +1,24 @@
 #ifndef _forth_h_
 #define _forth_h_
 
-#if defined(__APPLE__)
-# include <sys/syscall.h>
-#else
-#if defined(__i386__) || defined(__arm__)
-# define SYS_write 4
-# define SYS_exit 1
-#elif defined(__x86_64__)
-# define SYS_write 1
-# define SYS_exit 60
-#else
-# error "unsupported arch"
-#endif
-#endif
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef unsigned char byte;
 #if defined(__i386__)
-typedef long cell;
+typedef long cell_t;
 #elif defined(__x86_64__)
-typedef long long cell;
+typedef long long cell_t;
 #elif defined(__arm__)
-typedef long cell;
+typedef long cell_t;
 #else
 # error "unsupported arch"
 #endif
 
 #if defined(__i386__)
-typedef cell *(*code_word_t)(cell *) __attribute__((fastcall));
+typedef cell_t *(*code_word_t)(cell_t *) __attribute__((fastcall));
 #else
-typedef cell *(*code_word_t)(cell *);
+typedef cell_t *(*code_word_t)(cell_t *);
 #endif
 
 // DICTIONARY LAYOUT
@@ -49,15 +38,15 @@ typedef cell *(*code_word_t)(cell *);
 #define F_TAIL BIT(2)
 
 // INTERPRETER WORDS
-#define NEXT { w = CP(*ip++); goto *CP(*w); }
+#define NEXT { fprintf(stderr, "%p\n", ip); w = CP(*ip++); goto *CP(*w); }
 #define DUP { *++dsp = tos; }
 #define DROP { tos = *dsp--; }
 
-// Force to (cell *).
-#define CP(value) ((cell *) (value))
+// Force to (cell_t *).
+#define CP(value) ((cell_t *) (value))
 // Generic dictionary definition start.
 #define DEFE(name, label, flags, last) \
-  static cell *label ## _entry[] = \
+  static cell_t *label ## _entry[] = \
   { CP(last ## _entry), CP(name), \
     CP(sizeof(name) - 1), CP(flags)
 // Define code word with string name.
@@ -90,5 +79,8 @@ typedef cell *(*code_word_t)(cell *);
 #define U_TIN 3
 #define U_DICT_HEAD 4
 #define U_STATE 5
+
+extern void interp(cell_t *ip, cell_t *dsp, cell_t *rsp, cell_t *user, cell_t *heap,
+    void (*emit_func)(cell_t), void (*terminate_func)());
 
 #endif
