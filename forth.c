@@ -1,7 +1,9 @@
 #include "forth.h"
-#include "forth_asm.h"
 #include "forth_boot.h"
 #include "forth_util.h"
+
+#include <stdio.h>
+#include <stdlib.h>
 
 static void interp(cell_t *ip, cell_t *dsp, cell_t *rsp, cell_t *user, cell_t *heap) {
   cell_t tos = *dsp--;
@@ -44,10 +46,7 @@ static void interp(cell_t *ip, cell_t *dsp, cell_t *rsp, cell_t *user, cell_t *h
   DEFS("cell-", cellsub, celladd) { tos -= sizeof(cell_t); NEXT; }
   DEFS("cells", cells, cellsub) { tos *= sizeof(cell_t); NEXT; }
 
-  DEFC("SYS_write", sys_write, cells, SYS_write);
-  DEFC("SYS_exit", sys_exit, sys_write, SYS_exit);
-
-  DEFS("+", add, sys_exit) { tos += *dsp--; NEXT; }
+  DEFS("+", add, cells) { tos += *dsp--; NEXT; }
   DEFS("-", sub, add) { tos = (*dsp--) - tos; NEXT; }
   DEFS("*", mul, sub) { tos *= *dsp--; NEXT; }
   DEF(negate, mul) { tos = -tos; NEXT; }
@@ -131,9 +130,10 @@ static void interp(cell_t *ip, cell_t *dsp, cell_t *rsp, cell_t *user, cell_t *h
   DEFS("0<>branch", nzbranch, zbranch) {
     if (tos) { ip = CP(*ip + (cell_t) ip); } else { ++ip; } DROP; NEXT; }
 
-  DEF(syscall, nzbranch) { tos = system_call(tos, dsp); dsp -= 6; NEXT; }
+  DEF(emit, nzbranch) { fputc(tos, stdout); DROP; NEXT; }
+  DEF(terminate, emit) { exit(tos); DROP; NEXT; }
 
-  DEF(compare, syscall) {
+  DEF(compare, terminate) {
     dsp -= 3; tos = compare((const char *) dsp[1], dsp[2],
                             (const char *) dsp[3], tos); NEXT; }
 

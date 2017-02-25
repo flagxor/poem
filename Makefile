@@ -15,7 +15,7 @@ out:
 out/gen:
 	mkdir -p out/gen
 
-HEADERS=forth.h forth_asm.h out/gen/forth_boot.h forth_util.h
+HEADERS=forth.h out/gen/forth_boot.h forth_util.h
 
 out/gen/forth_boot.h: boot.fs | out/gen
 	xxd -i $< > $@

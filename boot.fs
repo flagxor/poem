@@ -12,10 +12,6 @@
 : until   ['] 0branch , here - , ; immediate
 : again   ['] branch , here - , ; immediate
 
-: terminate   >r 0 0 0 0 0 r> SYS_exit syscall ;
-: emit   >r 0 0 0 1 rp@ 1 SYS_write syscall rdrop drop ;
-: type   swap >r >r 0 0 0 r> r> 1 SYS_write syscall rdrop drop ;
-
 : postpone
     _parse_word find 1 =
     if , ahead [ swap ] then literal ['] , , then ; immediate
@@ -71,6 +67,8 @@ user _catcher
 : +hdigit   hex>d swap # 16 * + ;
 : _$   _parse_word 0 -rot range do i c@ +hdigit loop ;
 : $   _$ state @ if literal then ; immediate
+
+: type   for dup i + c@ emit loop drop ;
 
 : xt>name   # 3 cells - dup @ swap 1 cells + @ ;
 : xt>rest   1 cells + ;
