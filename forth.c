@@ -182,11 +182,8 @@ start:
   NEXT;
 }
 
-#ifdef __APPLE__
 int main(void) {
-#else
-void _start(void) {
-#endif
   cell dstack[16], rstack[16], user[16], heap[1024 * 100];
   interp(0, &dstack[1], rstack, user, heap);
+  return 0;
 }
