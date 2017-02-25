@@ -1,12 +1,16 @@
 #include "forth.h"
-#include "forth_boot.h"
 #include "forth_util.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-void forth(cell_t *ip, cell_t *dsp, cell_t *rsp, cell_t *user, cell_t *heap,
+void forth(
+    const void *cmd, size_t cmd_len,
+    cell_t **ipp, cell_t **dspp, cell_t **rspp, cell_t *user, cell_t *heap,
     void (*emit_func)(cell_t), void (*terminate_func)(cell_t)) {
+  cell_t *ip = *ipp;
+  cell_t *dsp = *dspp;
+  cell_t *rsp = *rspp;
   cell_t tos = *dsp--;
   cell_t *w, *x;
 
@@ -133,8 +137,9 @@ void forth(cell_t *ip, cell_t *dsp, cell_t *rsp, cell_t *user, cell_t *heap,
 
   DEF(emit, nzbranch) { emit_func(tos); DROP; NEXT; }
   DEF(terminate, emit) { terminate_func(tos); DROP; NEXT; }
+  DEF(yield, terminate) { DUP; *dspp = dsp; *rspp = rsp; *ipp = ip; return; }
 
-  DEF(compare, terminate) {
+  DEF(compare, yield) {
     dsp -= 3; tos = compare((const char *) dsp[1], dsp[2],
                             (const char *) dsp[3], tos); NEXT; }
 
@@ -171,14 +176,14 @@ void forth(cell_t *ip, cell_t *dsp, cell_t *rsp, cell_t *user, cell_t *heap,
 
   static cell_t *code[] = { W(quit) };
 start:
+  user[U_TIB] = (cell_t) cmd;
+  user[U_NTIB] = (cell_t) cmd_len;
+  user[U_TIN] = 0;
   if (!ip) {
-    user[U_TIB] = (cell_t) boot_fs;
-    user[U_NTIB] = (cell_t) boot_fs_len;
-    user[U_TIN] = 0;
     user[U_HEAP] = (cell_t) heap;
     user[U_DICT_HEAD] = (cell_t) quit_entry;
     user[U_STATE] = 0;
-    ip = (cell_t *) code;
   }
+  ip = (cell_t *) code;
   NEXT;
 }

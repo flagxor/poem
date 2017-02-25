@@ -1,6 +1,8 @@
 #ifndef _forth_h_
 #define _forth_h_
 
+#include <stdlib.h>
+
 typedef unsigned char byte;
 #if defined(__i386__)
 typedef long cell_t;
@@ -78,7 +80,8 @@ typedef cell_t *(*code_word_t)(cell_t *);
 #define U_STATE 5
 
 extern void forth(
-    cell_t *ip, cell_t *dsp, cell_t *rsp, cell_t *user, cell_t *heap,
+    const void *cmd, size_t cmd_len, 
+    cell_t **ipp, cell_t **dspp, cell_t **rspp, cell_t *user, cell_t *heap,
     void (*emit_func)(cell_t), void (*terminate_func)(cell_t));
 
 #endif

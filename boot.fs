@@ -75,10 +75,11 @@ user _catcher
 : xt.   xt>name type ;
 : see   ' xt>rest begin dup @ ['] _semiexit <> while dup @ xt. cell+ repeat ;
 
-: nl   10 emit ;
+: cr   10 emit ;
 : bye   0 terminate ;
 
-: test1 $ 14 for i 'A' + emit loop nl ;
+: test1 $ 14 for i 'A' + emit loop cr ;
 test1
 
-bye
+yield
+
