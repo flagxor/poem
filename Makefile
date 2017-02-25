@@ -20,8 +20,8 @@ HEADERS=forth.h out/gen/forth_boot.h forth_util.h
 out/gen/forth_boot.h: boot.fs | out/gen
 	xxd -i $< > $@
 
-out/forth: forth.c $(HEADERS) | out
-	$(CC) -g -O2 $(LDFLAGS) $< $(LIBS) -o $@
+out/forth: forth.c main.c $(HEADERS) | out
+	$(CC) -g -O2 $(LDFLAGS) forth.c main.c $(LIBS) -o $@
 
 clean:
 	rm -rf out

@@ -1,20 +1,6 @@
 #ifndef _forth_h_
 #define _forth_h_
 
-#if defined(__APPLE__)
-# include <sys/syscall.h>
-#else
-#if defined(__i386__) || defined(__arm__)
-# define SYS_write 4
-# define SYS_exit 1
-#elif defined(__x86_64__)
-# define SYS_write 1
-# define SYS_exit 60
-#else
-# error "unsupported arch"
-#endif
-#endif
-
 typedef unsigned char byte;
 #if defined(__i386__)
 typedef long cell_t;
@@ -90,5 +76,9 @@ typedef cell_t *(*code_word_t)(cell_t *);
 #define U_TIN 3
 #define U_DICT_HEAD 4
 #define U_STATE 5
+
+extern void forth(
+    cell_t *ip, cell_t *dsp, cell_t *rsp, cell_t *user, cell_t *heap,
+    void (*emit_func)(cell_t), void (*terminate_func)(cell_t));
 
 #endif

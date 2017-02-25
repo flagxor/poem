@@ -5,7 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void interp(cell_t *ip, cell_t *dsp, cell_t *rsp, cell_t *user, cell_t *heap) {
+void forth(cell_t *ip, cell_t *dsp, cell_t *rsp, cell_t *user, cell_t *heap,
+    void (*emit_func)(cell_t), void (*terminate_func)(cell_t)) {
   cell_t tos = *dsp--;
   cell_t *w, *x;
 
@@ -130,8 +131,8 @@ static void interp(cell_t *ip, cell_t *dsp, cell_t *rsp, cell_t *user, cell_t *h
   DEFS("0<>branch", nzbranch, zbranch) {
     if (tos) { ip = CP(*ip + (cell_t) ip); } else { ++ip; } DROP; NEXT; }
 
-  DEF(emit, nzbranch) { fputc(tos, stdout); DROP; NEXT; }
-  DEF(terminate, emit) { exit(tos); DROP; NEXT; }
+  DEF(emit, nzbranch) { emit_func(tos); DROP; NEXT; }
+  DEF(terminate, emit) { terminate_func(tos); DROP; NEXT; }
 
   DEF(compare, terminate) {
     dsp -= 3; tos = compare((const char *) dsp[1], dsp[2],
@@ -180,10 +181,4 @@ start:
     ip = (cell_t *) code;
   }
   NEXT;
-}
-
-int main(void) {
-  cell_t dstack[16], rstack[16], user[16], heap[1024 * 100];
-  interp(0, &dstack[1], rstack, user, heap);
-  return 0;
 }
